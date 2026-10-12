@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # One-time setup: creates .venv, installs packages, registers a Jupyter kernel, builds the dataset.
-# Usage:  cd ~/dev/hit140-lr21 && bash setup.sh
+# Usage from the repository root: bash "Linear regression 2.1/setup.sh"
 set -euo pipefail
 cd "$(dirname "$0")"
 

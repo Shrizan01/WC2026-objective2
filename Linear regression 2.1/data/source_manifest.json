@@ -1,0 +1,23 @@
+[
+  {
+    "file": "fifa_rank_june2026.csv",
+    "sha256": "f4e2dc1dffa20a99bf759666b535e40424900d6170a25fbda9d308f5bbba60af",
+    "source_url": null,
+    "retrieved_at": null,
+    "status": "Supplied project input; original source and retrieval date not recorded"
+  },
+  {
+    "file": "results.csv",
+    "sha256": "5dcefd1aa0483979ea8378cef5be448d2005609d39945ea162378561a30a6767",
+    "source_url": null,
+    "retrieved_at": null,
+    "status": "Supplied project input; original source and retrieval date not recorded"
+  },
+  {
+    "file": "wc2026_lr21_v2.csv",
+    "sha256": "fd1a3c34f246d3597e37b22e10438cc55b01128b32d61bf8aaee5f2b1f436bc2",
+    "source_url": null,
+    "retrieved_at": null,
+    "status": "Supplied project input; original source and retrieval date not recorded"
+  }
+]

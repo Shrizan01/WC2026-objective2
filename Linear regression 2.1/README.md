@@ -1,47 +1,42 @@
-# HIT140 Assessment 3 – Linear Regression 2.1
+# HIT140 — Linear regression 2.1
 
-Predicting **goal difference** (Team A − Team B) for all 104 FIFA World Cup 2026 matches.
+Predict match goal difference using 104 rows and eight pre-match predictors. This is a working analysis with unresolved source checks, not a submission-ready claim of verified data. See [data definitions and limitations](DATA_NOTES.md).
 
-## Setup (once)
+## Run
+
 From the repository root:
+
 ```bash
 cd "Linear regression 2.1"
 bash setup.sh
-```
-Creates `.venv`, installs `requirements.txt`, registers the Jupyter kernel **Python (hit140-lr21)** and builds the dataset.
-
-Afterwards: `source .venv/bin/activate`
-
-## Structure
-```
-data/raw/          results.csv, fifa_rank_june2026.csv, wc2026_lr21_v2.csv (fixture list)
-data/processed/    wc2026_lr21_refined.csv   <- modelling dataset
-src/               build_lr21_refined.py     <- builds the dataset from raw data
-                   verify_lr21.py            <- independent checks of every column
-notebooks/         analysis notebooks
-figures/           exported plots for the report
+source .venv/bin/activate
+python src/verify_lr21.py
+python src/run_analysis.py
 ```
 
-## Variables (all Team A − Team B, all known before kick-off)
-| Variable | Meaning | Shared with 2.2? |
-|---|---|---|
-| `rank_diff` | FIFA rank of B − rank of A (positive = A ranked higher) | Grey area |
-| `stage` | 1 Group, 2 R32, 3 R16, 4 QF, 5 SF, 6 3rd place, 7 Final | Yes |
-| `rest_diff` | Rest days A − B, capped at ±7 | Yes |
-| `elo_diff` | Elo rating A − B, from earlier matches only | No |
-| `winrate10_diff` | Win rate in last 10 internationals | No |
-| `wc_exp_diff` | Previous World Cups played | No |
-| `host_diff` | +1 A is host, −1 B is host, 0 neither | Depends on 2.2 version |
-| `tourn_pts_diff` | Points earned earlier in this tournament | No |
+The setup creates an environment and rebuilds the dataset. The analysis runs independently of the current working directory. Alternatively, open `notebooks/01_lr21_model_comparison.ipynb` from this folder or its notebooks folder; it calls the same script.
 
-## Data decisions (cite in report)
-- Goals include extra time; penalty shootouts are treated as draws.
-- `rest_diff` capped at ±7 days: Uruguay showed 76 days' rest before its opener (pre-tournament friendlies missing from `results.csv`) and Japan 14. Affects 2 matches (11 and 16).
-- Final (Spain v Argentina, match 104) coded as stage 7 and third-place match (France v England, 103) as stage 6. The original fixture file had both as 6; this now matches the official stage IDs in `src_matches.csv`.
-- FIFA ranks: `fifa_rank_june2026.csv` matches the published pre-tournament June 2026 ranking for 46 of 48 teams (Haiti/Curaçao may be swapped at 82/83 — one place, negligible). The ranks in `src_teams.csv` are wrong for 13 teams and are not used.
-- `wc_exp_diff` counts World Cups under the current team name, so Czech Republic gets 1 (Czechoslovakia's 8 appearances are excluded). Mention as a limitation.
+## Files
 
-## To do
-- [x] Data verified: run `python src/verify_lr21.py` (all checks pass)
-- [ ] Optional: confirm Haiti (82/83) and Curaçao (82/83) on fifa.com
-- [x] Model comparison notebook: `notebooks/01_lr21_model_comparison.ipynb` (outputs in `figures/`)
+- `data/raw/`: supplied historical matches, rankings and fixture list.
+- `data/processed/`: 104-row modelling dataset.
+- `data/source_manifest.json`: input fingerprints and unresolved provenance.
+- `src/build_lr21_refined.py`: feature construction.
+- `src/verify_lr21.py`: internal consistency checks; exits unsuccessfully if a check fails. These do not verify external facts.
+- `src/run_analysis.py`: EDA, chronological model comparison, tuning, diagnostics and figures.
+- `notebooks/01_lr21_model_comparison.ipynb`: executable interface to the same analysis.
+- `figures/`: reproducible figures, per-fold metrics, date splits, predictions, model summary and development OLS output.
+
+## Evaluation
+
+Four expanding date blocks within the 72 group-stage matches compare a mean baseline, OLS, Ridge, Lasso, Huber and random forest. Ridge/Lasso tuning uses chronological inner validation with scaling inside each fit. The lowest development MAE among the linear candidates determines the selected model. The 32 knockout matches are a **previously inspected retrospective evaluation**. See `figures/results_summary.json` for the selected model and limitations; `table_model_comparison.csv` reports development-fold averages, not knockout scores.
+
+The old random-fold analysis is retained in Git history, not as competing current results. The obsolete Lasso-path figure was removed because that analysis is no longer run. Stage is constant in development; source gaps and the capped rest variable remain limitations.
+
+## Assessment completion
+
+- Resolve source URLs, ranking date, score conventions and missing historical matches.
+- Agree and document variable overlap with the Regression 2.2 author.
+- Interpret actual results and limitations in your own report prose; do not claim significance from small metric differences.
+- Post real decisions, reviews and contribution evidence in the lecturer's Teams space. Link GitHub work there; GitHub does not replace Teams evidence.
+- The group submission also needs its four-page Word report, repository URL text file, Turnitin report and signed AI-use declaration. These are separate from this analysis folder.

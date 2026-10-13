@@ -30,11 +30,11 @@ results = (pd.read_csv(RAW / "results.csv", parse_dates=["date"])
 fifa_rank = pd.read_csv(RAW / "fifa_rank_june2026.csv").set_index("team")["fifa_rank_june2026"]
 fixtures = pd.read_csv(RAW / "wc2026_lr21_v2.csv", parse_dates=["date"])  # used only for match_id, team order, stage
 
-is_wc2026 = (results.tournament == "FIFA World Cup") & (results.date >= "2026-06-01")
+is_wc2026 = (results.tournament == "FIFA World Cup") & (results.date >= "2026-06-01") & (results.date < "2027-01-01")
 HOSTS = {"Mexico", "United States", "Canada"}
 
 # ---------------------------------------------------------------- 2. Elo ratings
-# World Football Elo method (eloratings.net). We walk through every international in
+# Custom Elo-style implementation, not a verified official rating series. Walk through matches in
 # date order and store each team's rating BEFORE the match -> no data leakage.
 def k_factor(tournament: str) -> int:
     t = tournament.lower()
@@ -84,8 +84,10 @@ wc_exp = (pd.concat([past_wc[["date", "home_team"]].rename(columns={"home_team":
 # ---------------------------------------------------------------- 5. Build one row per WC 2026 match
 points, rows = {}, []
 for i, m in results[is_wc2026].iterrows():
-    pair = fixtures[((fixtures.team_a == m.home_team) & (fixtures.team_b == m.away_team)) |
-                    ((fixtures.team_a == m.away_team) & (fixtures.team_b == m.home_team))].iloc[0]
+    matches = fixtures[(fixtures.date == m.date) & (((fixtures.team_a == m.home_team) & (fixtures.team_b == m.away_team)) |
+                    ((fixtures.team_a == m.away_team) & (fixtures.team_b == m.home_team)))]
+    assert len(matches) == 1, "Expected exactly one fixture per date and team pair"
+    pair = matches.iloc[0]
     A, B = pair.team_a, pair.team_b
     flipped = A != m.home_team
     elo_h, elo_a = elo_before[i]

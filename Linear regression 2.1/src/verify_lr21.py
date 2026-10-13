@@ -1,6 +1,7 @@
 """
 Independent checks of data/processed/wc2026_lr21_refined.csv.
-Every column is recomputed a second way from data/raw/results.csv and compared.
+Checks internal consistency against supplied raw files, not external authenticity.
+Elo is checked for plausibility only; this is not a complete independent audit.
 Run:  python src/verify_lr21.py      (prints PASS/FAIL for each check)
 """
 from pathlib import Path
@@ -70,3 +71,6 @@ width = max(map(len, checks))
 for name, passed in checks.items():
     print(f"{name:<{width}}  {'PASS' if passed else 'FAIL'}")
 print(f"\n{sum(checks.values())}/{len(checks)} checks passed")
+
+if not all(checks.values()):
+    raise SystemExit(1)

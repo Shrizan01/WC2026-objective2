@@ -1,0 +1,21 @@
+{
+  "selected_linear_model": "Ridge",
+  "selection_rule": "Lowest mean chronological development-fold MAE among linear candidates",
+  "development_rows": 72,
+  "retrospective_rows": 32,
+  "retrospective_metrics": {
+    "MAE": 1.1667015337914735,
+    "RMSE": 1.4867150903177395,
+    "R2": 0.10996088005773974
+  },
+  "parameters": {
+    "ridge__alpha": 3.1622776601683795
+  },
+  "limitations": [
+    "Knockout outcomes were inspected in the previous analysis: not an untouched test.",
+    "Features update with results available before each match; this is not a forecast of the entire knockout stage made at its start.",
+    "Stage is constant in group-stage training; its effect cannot be estimated.",
+    "Source provenance and completeness remain unverified; rest differences remain capped at \u00b17.",
+    "Small chronological folds and repeated teams limit precision; no significance claim."
+  ]
+}

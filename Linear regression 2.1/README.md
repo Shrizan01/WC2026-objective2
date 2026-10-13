@@ -40,3 +40,9 @@ The old random-fold analysis is retained in Git history, not as competing curren
 - Interpret actual results and limitations in your own report prose; do not claim significance from small metric differences.
 - Post real decisions, reviews and contribution evidence in the lecturer's Teams space. Link GitHub work there; GitHub does not replace Teams evidence.
 - The group submission also needs its four-page Word report, repository URL text file, Turnitin report and signed AI-use declaration. These are separate from this analysis folder.
+
+## Documentation for your contribution
+
+- [Report outline and results guide](docs/REPORT_OUTLINE_AND_RESULTS.md) — evidence and prompts for writing your own section.
+- [Contribution and review record](docs/CONTRIBUTION_AND_REVIEW.md) — complete with actual contributions and peer feedback.
+- [Teams update draft](docs/TEAMS_UPDATE_DRAFT.md) — adapt and post yourself; not sent automatically.

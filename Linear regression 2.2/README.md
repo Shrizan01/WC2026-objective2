@@ -32,7 +32,7 @@ figures/           11 exported figures for the report
 |---|---|---|
 | `avg_gf_team` | Rolling avg goals scored by the team in its earlier matches at this World Cup | No |
 | `avg_ga_opp` | Rolling avg goals conceded by the opponent in its earlier matches | No |
-| `stage` | Group=1, R32=2, R16=3, QF=4, SF=5, Final=6 (3rd-place match also 6) | Yes (2.1 codes the Final as 7) |
+| `stage` | Group=1, R32=2, R16=3, QF=4, SF=5, 3rd place=6, Final=7 | Yes (identical coding) |
 | `rest_team` | Days since the team's previous match at this World Cup (0 = first match) | Related (2.1 uses rest difference) |
 | `avg_shots_team` | Rolling avg shots taken by the team | No |
 | `opp_avg_shots_against` | Rolling avg shots the opponent has allowed | No |
@@ -41,6 +41,9 @@ figures/           11 exported figures for the report
 
 Target: `goals_scored` (whole number, 0–7, mean 1.48).
 
+**Overlap with LR 2.1 (maximum 4 allowed):** counted conservatively as 3 — `stage` (identical), rest days
+(`rest_team` vs 2.1's `rest_diff`) and host status (`team_host` vs 2.1's `host_diff`). The other five predictors are unique to 2.2.
+
 ## Analysis (notebook sections)
 | Section | Content |
 |---|---|
@@ -48,9 +51,11 @@ Target: `goals_scored` (whole number, 0–7, mean 1.48).
 | 2 | 80/20 train-test split (seed 42), StandardScaler fitted on train only |
 | 3 | Descriptive statistics and Pearson correlations with significance |
 | 4 | OLS regression (statsmodels) with full summary |
+| 4b | Robustness check: OLS refitted without first-match rows (all form variables = 0) |
 | 5 | Assumption tests: Shapiro-Wilk, Durbin-Watson, Breusch-Pagan, VIF |
 | 6 | OLS, Ridge, Lasso, ElasticNet with GridSearchCV tuning |
 | 7 | 5-fold cross-validation |
+| 7b | Chronological validation: train on 72 group-stage matches, test on 32 knockout matches (same idea as LR 2.1) |
 | 8 | Welch t-test: group stage vs knockout goals |
 | 9 | Why R² is low / negative in some folds |
 | 10 | Figures 1–11 |
@@ -62,11 +67,14 @@ Target: `goals_scored` (whole number, 0–7, mean 1.48).
 - Each team's first match (48 rows, 23%) has no history: all rolling values and `rest_team` are 0. Structural, not imputed.
 - Goals include extra time; penalty shootout goals are not counted.
 - `match_id` and local match dates come from the shared fixture list (`wc2026_lr21_v2.csv`), so LR 2.1 and 2.2 join on `match_id`. `src_matches.csv` numbers matches differently and gives the UTC date, which is one day late for 30 evening kick-offs; all dates were checked against `results.csv`.
+- Stage uses the official stage IDs from `src_matches.csv` (3rd place = 6, Final = 7), identical to LR 2.1.
 - Team names standardised to the names used in `results.csv` and LR 2.1 (e.g. Czechia → Czech Republic, Türkiye → Turkey, IR Iran → Iran).
 
 ## Limitations (mention in report)
 - **Possession definition:** in 24 of 104 matches the two teams' possession adds to 81–93% rather than 100%, because fifa.com reports a separate "ball in contest" share. Values are used as published.
-- **First-match zeros:** a value of 0 means "no history", not "zero form", and the 48 first-match rows share the same zero pattern across all rolling variables.
+- **First-match zeros:** a value of 0 means "no history", not "zero form". `rest_team` and `opp_avg_shots_against` are significant on all rows but not once the 48 first-match rows are removed (Section 4b), so they are reported with caution; `avg_ga_opp` is the robust predictor.
+- **Random split:** the 80/20 split and 5-fold CV can put the two rows of one match on different sides and mix early and late matches. Section 7b gives the chronological check; no model beats the group-stage mean on knockout matches.
+- **Predictive power:** R² = 0.185 is in-sample (training data). Test-set, CV and knockout R² are near zero or negative.
 - **Count target:** goals are whole numbers, so OLS residuals are non-normal (Shapiro-Wilk p < 0.001).
 - Small sample: 208 rows, 64 of them knockout rows.
 

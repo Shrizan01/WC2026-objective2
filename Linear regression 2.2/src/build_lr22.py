@@ -6,7 +6,7 @@ Target:    goals_scored = goals the team scored in the match (incl. extra time; 
 Predictors (all team-level, all known BEFORE kick-off):
     avg_gf_team            team's average goals scored in its earlier matches at this World Cup
     avg_ga_opp             opponent's average goals conceded in its earlier matches
-    stage                  1=Group 2=R32 3=R16 4=QF 5=SF 6=Final (3rd-place match also 6)
+    stage                  1=Group 2=R32 3=R16 4=QF 5=SF 6=3rd place 7=Final
     rest_team              days since the team's previous match at this World Cup (0 = first match)
     avg_shots_team         team's average total shots in its earlier matches
     opp_avg_shots_against  average shots the opponent has allowed in its earlier matches
@@ -113,9 +113,8 @@ FORM = ["avg_gf_team", "avg_ga_opp", "rest_team", "avg_shots_team",
 df[FORM] = df[FORM].fillna(0)
 df["rest_team"] = df.rest_team.astype(int)
 df[FORM] = df[FORM].round(4)
-# Stage: src_matches.csv uses 6 = 3rd place and 7 = Final. Both final-weekend matches are
-# coded 6 ("Final" round) so the scale is Group=1 ... Final=6. Affects only match 104 (2 rows).
-df["stage"] = df.stage.clip(upper=6)
+# Stage follows the official stage IDs in src_matches.csv: 3rd place = 6, Final = 7.
+# This is the same coding as LR 2.1, because stage is the variable both analyses share.
 
 # Sort by match; within a match, Team A of the fixture list comes first (same order as LR 2.1)
 team_a = fixtures.set_index("match_id")["team_a"]

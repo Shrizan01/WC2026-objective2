@@ -37,13 +37,13 @@ for r in df.itertuples():
 checks["goals_scored matches results.csv"] = gs_ok
 checks["date matches results.csv"] = date_ok
 
-# Stage: 72 group, 16 R32, 8 R16, 4 QF, 2 SF, 2 final-weekend matches (3rd place + Final = 6)
-checks["stage counts 72/16/8/4/2/2 matches"] = (
-    df.drop_duplicates("match_id").stage.value_counts().sort_index().tolist() == [72, 16, 8, 4, 2, 2])
+# Stage: 72 group, 16 R32, 8 R16, 4 QF, 2 SF, 1 third place, 1 final (x 2 rows each)
+checks["stage counts 72/16/8/4/2/1/1 matches"] = (
+    df.drop_duplicates("match_id").stage.value_counts().sort_index().tolist() == [72, 16, 8, 4, 2, 1, 1])
 checks["stage never decreases over time"] = df.sort_values(["date", "match_id"]).stage.is_monotonic_increasing
 last = df.sort_values("date").iloc[-1]
-checks["final (stage 6) is Spain v Argentina, last match"] = (
-    last.stage == 6 and {last.team, last.opponent} == {"Spain", "Argentina"})
+checks["final (stage 7) is Spain v Argentina, last match"] = (
+    last.stage == 7 and {last.team, last.opponent} == {"Spain", "Argentina"})
 
 # Host flag
 checks["team_host = 1 only for Mexico, United States, Canada"] = (

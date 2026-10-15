@@ -14,10 +14,10 @@ Two linear regression analyses that predict scoring at the FIFA World Cup 2026 u
 
 | Name | Student ID | Contribution |
 |---|---|---|
-| Sumit Maharjan | <STUDENT ID> | Linear Regression 2.2: goals scored by a team |
-| Suraj <SURNAME> | <STUDENT ID> | Linear Regression 2.1: match goal difference |
-| <FULL NAME> | <STUDENT ID> | <CONTRIBUTION> |
-| <FULL NAME> | <STUDENT ID> | <CONTRIBUTION> |
+| Sumit Maharjan | S397861 | Linear Regression 2.2: goals scored by a team |
+| Suraj Karki | S397088 | Linear Regression 2.1: match goal difference |
+| <FULL NAME> | S397671 | Data collection and preparation, GitHub repository setup |
+| <FULL NAME> | S398730 | Report integration and editing, submission (Turnitin, AI declaration) |
 
 ---
 
